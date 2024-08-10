@@ -15,4 +15,22 @@ export class S3Service {
       region: 'default',
     });
   }
+  async uploadFile(file: Express.Multer.File, folderName: string) {
+    const ext = extname(file.originalname);
+    return await this.s3
+      .upload({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: `${folderName}/${Date.now()}${ext}`,
+        Body: file.buffer,
+      })
+      .promise();
+  }
+  async deleteFile(Key: string) {
+    return await this.s3
+      .deleteObject({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: decodeURI(Key),
+      })
+      .promise();
+  }
 }
