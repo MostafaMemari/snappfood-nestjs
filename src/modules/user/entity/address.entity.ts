@@ -18,10 +18,8 @@ export class UserAddressEntity {
   postal_code: string;
   @Column()
   userId: number;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
-  @ManyToOne(() => UserEntity, (user) => user.addressList, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => UserEntity, (user) => user.addressList, { onDelete: 'CASCADE' })
   user: UserEntity;
 }
