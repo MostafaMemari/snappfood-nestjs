@@ -17,13 +17,14 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UploadFileS3 } from 'src/common/interceptors/upload-file.interceptor';
 import { Pagination } from 'src/common/decorators/pagination.decorator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { FormType } from 'src/common/enum/form-type.enum';
 
 @Controller('category')
+@ApiTags('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -31,18 +32,16 @@ export class CategoryController {
   @UseInterceptors(UploadFileS3('image'))
   @ApiConsumes(FormType.Multipart)
   create(
+    @Body() createCategoryDto: CreateCategoryDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1 * 1024 * 1024 }),
+          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
           new FileTypeValidator({ fileType: 'image/(png|jpg|jpeg|webp)' }),
-          // new FileTypeValidator({ fileType: 'image/png' }),
         ],
       }),
     )
     image: Express.Multer.File,
-    @Body()
-    createCategoryDto: CreateCategoryDto,
   ) {
     return this.categoryService.create(createCategoryDto, image);
   }
@@ -53,32 +52,32 @@ export class CategoryController {
     return this.categoryService.findAll(pagination);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOneById(+id);
+  @Get('/by-slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.categoryService.findBySlug(slug);
   }
 
   @Patch(':id')
   @UseInterceptors(UploadFileS3('image'))
   @ApiConsumes(FormType.Multipart)
   update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCategoryDto: UpdateCategoryDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1 * 1024 * 1024 }),
+          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
           new FileTypeValidator({ fileType: 'image/(png|jpg|jpeg|webp)' }),
         ],
       }),
     )
     image: Express.Multer.File,
-    @Param('id', ParseIntPipe) id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoryService.update(+id, updateCategoryDto);
+    return this.categoryService.update(id, updateCategoryDto, image);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.remove(id);
   }
 }
