@@ -14,7 +14,7 @@ export function paginationGenerator(count: number = 0, page: number = 0, limit: 
   return {
     totalCount: count,
     page: page + 1,
-    countPerPage: limit,
+    countPerPage: +limit,
     pageCount: Math.ceil(count / limit),
   };
 }
