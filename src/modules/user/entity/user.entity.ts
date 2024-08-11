@@ -32,9 +32,11 @@ export class UserEntity {
   agentId: number;
   @Column({ nullable: true, default: false })
   mobile_verify: boolean;
-  @CreateDateColumn({ type: 'time with time zone' })
+  @CreateDateColumn()
+  // @CreateDateColumn({ type: 'time with time zone' }) only pg
   created_at: Date;
-  @UpdateDateColumn({ type: 'time with time zone' })
+  @UpdateDateColumn()
+  // @UpdateDateColumn({ type: 'time with time zone' }) only pg
   updated_at: Date;
 
   @OneToMany(() => UserAddressEntity, (address) => address.user)

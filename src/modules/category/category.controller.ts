@@ -30,8 +30,8 @@ export class CategoryController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: 'image/png' }),
-          // new FileTypeValidator({ fileType: 'image/(png|jpg|jpeg|webp)' }),
+          new FileTypeValidator({ fileType: 'image/(png|jpg|jpeg|webp)' }),
+          // new FileTypeValidator({ fileType: 'image/png' }),
         ],
       }),
     )
@@ -39,11 +39,7 @@ export class CategoryController {
     @Body()
     createCategoryDto: CreateCategoryDto,
   ) {
-    return {
-      image,
-      createCategoryDto,
-    };
-    // return this.categoryService.create(createCategoryDto);
+    return this.categoryService.create(createCategoryDto, image);
   }
 
   @Get()
