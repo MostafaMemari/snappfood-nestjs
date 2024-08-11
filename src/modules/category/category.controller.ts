@@ -49,7 +49,7 @@ export class CategoryController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+    return this.categoryService.findOneById(+id);
   }
 
   @Patch(':id')
