@@ -1,7 +1,5 @@
+---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/cp63887580097/snapfood
-    - rsync -av --exclude='.git' ./ $DEPLOYPATH
-    - cd $DEPLOYPATH
-    - /usr/local/bin/npm install
-    - /usr/local/bin/npm run build
+    - /bin/cp * $DEPLOYPATH
